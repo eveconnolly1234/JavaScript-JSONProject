@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NobelPrizes</title>
+    <meta name="viewport" content="width=device-width">
+    <meta charset="UTF-8">
+
+    <link rel=stylesheet type="text/css" href="mystyle.css">
+
+
+</head>
+
+<body>
+    <div class="homepage">
+        <header>
+
+            <h1>Nobel Prizes</h1>
+           
+            <nav>
+                <form>
+                    <p>Select: 
+                    <select id="year1" required></select>
+                    <select id="year2" required></select>
+                    <select id="category"></select></p>
+
+
+
+                    <input name="gender" id="male" type="radio" value="male">Male
+                    <input name="gender" id="female" type="radio" value="female">Female
+                    <input name="gender" id="male female" type="radio" value="male female" checked>All<br>
+                    <br>
+
+                    <button type="button" onclick="Gender(furtherInfo)">Search</button>
+
+                </form>
+            </nav>
+        </header>
+        <div id="main">
+
+            <div id="result"></div>
+
+            <div id="prizes_table"></div>
+
+            <div id="prizesInfo"></div>
+
+
+            <div class="modal_box">
+
+                <div class="modal_content">
+                    <div id="demoWinners"></div>
+                    <div class="close">+</div>
+                </div>
+            </div>
+
+            <script>
+                var fillObject;
+                var prizes;
+
+                var xmlhttp1 = new XMLHttpRequest();
+                xmlhttp1.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var parsedObj = JSON.parse(this.responseText);
+                        fillObject = parsedObj.prizes;
+                        parseJSON(fillObject);
+                    }
+                };
+                xmlhttp1.open("GET", "prizesByYear.json", true);
+                xmlhttp1.send();
+
+
+
+                var furtherInfo;
+                var laureates;
+
+                var xmlhttp2 = new XMLHttpRequest();
+                xmlhttp2.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var parsedWinners = JSON.parse(this.responseText);
+                        furtherInfo = parsedWinners.laureates;
+                    }
+                };
+                xmlhttp2.open("GET", "winnersByID.json", true);
+                xmlhttp2.send();
+
+                function box(lauId) {
+                    document.querySelector('.modal_box').style.display = 'flex';
+
+                    var winnersArray = furtherInfo;
+                    var winnersInfo = '';
+                    var prizesArray = fillObject;
+                    affiliationsInfo = ''
+
+                    for (var m = 0; m < winnersArray.length; m++) {
+                        console.log(winnersArray[m].id);
+                        var id = winnersArray[m].id;
+                        if (id == lauId) {
+                            var firstname = winnersArray[m].firstname;
+                            var surname = winnersArray[m].surname;
+                            var born = winnersArray[m].born;
+                            var died = winnersArray[m].died;
+                            var bornCountry = winnersArray[m].bornCountry;
+                            var bornCountryCode = winnersArray[m].bornCountryCode;
+                            var bornCity = winnersArray[m].bornCity;
+                            var diedCountry = winnersArray[m].diedCountry;
+                            var diedCountryCode = winnersArray[m].diedCountryCode;
+                            var diedCity = winnersArray[m].diedCity;
+                            var morePrizes = winnersArray[m].prizes;
+                            for (var i = 0; i < prizesArray.length; i++) {
+                                var category = prizesArray[i].category;
+                                for (var n = 0; n < morePrizes.length; n++) {
+                                    var motivation = morePrizes[n].motivation;
+                                    var affiliations = morePrizes[n].affiliations;
+                                    for (var p = 0; p < affiliations.length; p++) {
+                                        var name = affiliations[p].name;
+                                        var city = affiliations[p].city;
+                                        var country = affiliations[p].country;
+                                        affiliationsInfo = "<p>Name: " + name + "</p>" + "<p>Where: " + city + ', ' + country + "</p>";
+                                    
+                                    winnersInfo = "<p>Name: " + firstname + ' ' + surname + "</p>" ;
+                                        if (born !== '0000-00-00') {
+                                            winnersInfo += "<p>Date of Birth: " + born + "</p>";
+                                        }
+                                    if (died !== '0000-00-00') {
+                                        winnersInfo += "<p>Date of death: " + died + "</p>";
+                                    }
+                                      if (bornCity != null || bornCountry != null || bornCountryCode != null) {
+                                          winnersInfo += "<p>Place of Birth: " + bornCity + ', ' + bornCountry + ', ' + bornCountryCode + "</p>";
+                                          }
+                                    if (died !== '0000-00-00') {
+                                        winnersInfo +="<p>Place of death: " + diedCity + ', ' + diedCountry + ', ' + diedCountryCode + "</p>";
+                                    } 
+                                    
+                                    winnersInfo +="<p>Category of award: " + category + "</p>" + "<p>Motivation: " + motivation + "</p>" 
+                                        if (affiliations[p].name !=null || affiliations[p].country!=null)
+                                        { winnersInfo += "<p><u>Affiliations: </u>" + affiliationsInfo + "</p>";}
+
+                                    document.getElementById("demoWinners").innerHTML = winnersInfo;
+                                }};
+                            };
+                        };
+                    };
+                    document.querySelector('.close').addEventListener('click', function() {
+                        document.querySelector('.modal_box').style.display = 'none';
+
+                    });
+                };
+
+                function parseJSON(obj) {
+
+                    var prizesArray = obj;
+                    var yearList = [];
+                    var categoryList = [];
+                    var prizes_out = '';
+
+
+                    for (var i = 0; i < prizesArray.length; i++) {
+                        var year = prizesArray[i].year;
+                        var y = yearList.includes(year);
+                        if (!y) {
+                            yearList.push(year);
+                        }
+
+                        var category = prizesArray[i].category;
+
+                        var cat = categoryList.includes(category);
+                        if (!cat) {
+                            categoryList.push(category);
+                        }
+
+                        if (prizesArray[i].overallMotivation == null) {
+                            var overallMotivation = " ";
+                        } else {
+                            var overallMotivation = prizesArray[i].overallMotivation;
+                        }
+
+                        var laureates = prizesArray[i].laureates;
+
+                        for (var j = 0; j < laureates.length; j++) {
+                            var id = laureates[j].id;
+                            var firstname = laureates[j].firstname;
+                            var surname = laureates[j].surname;
+                            var motivation = laureates[j].motivation;
+                            var share = laureates[j].share;
+                        }
+                    }
+                    document.getElementById("prizes_table").innerHTML = prizes_out;
+
+                    var categoryChoice = '';
+                    categoryChoice += '<option>All</option>';
+                    for (var k = 0; k < categoryList.length; k++) {
+                        categoryChoice += '<option value="' + categoryList[k] + '">'
+                        categoryChoice += categoryList[k] + '</option>';
+                        document.getElementById("category").innerHTML = categoryChoice;
+
+                        var yearChoice = '';
+                        yearChoice += '<option>Select a year</option>'
+                        for (var l = 0; l < yearList.length; l++) {
+                            yearChoice += '<option value="' + yearList[l] + '">'
+                            yearChoice += yearList[l] + '</option>'
+                            document.getElementById("year1").innerHTML = yearChoice;
+                            document.getElementById("year2").innerHTML = yearChoice;
+                        }
+                    }
+                }
+
+                function Gender(obj) {
+
+                    var gen = document.getElementsByName('gender');
+
+                    for (h = 0; h < gen.length; h++) {
+                        if (gen[h].checked == true) {
+
+                            var winnersArray = furtherInfo;
+                            var prizesArray = fillObject;
+                            var prizes_out = "<h2>Prizes</h2><table>"
+                            prizes_out += "<tr><th>Year</th><th>Category</th><th>Overall Motivation</th><th>Laureates</th></tr>";
+
+                            for (var i = 0; i < prizesArray.length; i++) {
+                                var id = prizesArray[i].id;
+                                var category = prizesArray[i].category;
+                                var year = prizesArray[i].year;
+                                var laureates = prizesArray[i].laureates;
+                                var laureates_out = [];
+                                for (var j = 0; j < laureates.length; j++) {
+                                    var id = laureates[j].id;
+                                    var firstname = laureates[j].firstname;
+                                    var surname = laureates[j].surname;
+
+                                    laureates_out.push({
+                                        "id": id,
+                                        "fullName": firstname + " " + surname
+                                    });
+                                }
+                                var overallMotivation = prizesArray[i].overallMotivation;
+
+                                var catSelect = document.getElementById("category").value;
+                                var yr1 = document.getElementById("year1").value;
+                                var yr2 = document.getElementById("year2").value;
+
+                                if ((parseInt(yr1) <= parseInt(year)) && (parseInt(year) <= parseInt(yr2))) {
+                                    var category = prizesArray[i].category;
+                                    if (catSelect === category) {
+
+                                        if (prizesArray[i].overallMotivation == null) {
+                                            var overallMotivation = " ";
+                                        } else {
+                                            var overallMotivation = prizesArray[i].overallMotivation;
+                                        };
+
+                                        for (var j = 0; j < laureates_out.length; j++) {
+                                            var id = laureates[j].id;
+                                            current_id = id;
+                                            morePrizesInfo = '';
+                                            for (var m = 0; m < winnersArray.length; m++) {
+                                                var morePrizes = winnersArray[m].prizes;
+
+                                                for (var n = 0; n < morePrizes.length; n++) {
+                                                    var motivation = morePrizes[n].motivation;
+                                                    var gender = winnersArray[m].gender;
+                                                    if (winnersArray[m].id == current_id) {
+                                                        if (gen[h].value == "male female") {
+                                                            prizes_out += "<tr><td>" + year + "</td><td>" + category + "</td><td>" + overallMotivation + "</td><td>" + "<a id='laur_out' href='javascript:box(" + current_id + ");'>" + laureates_out[j].fullName + "</a>" + "</br>Motivation: " + motivation + "</td></tr>";
+                                                        } else {
+                                                            if (winnersArray[m].gender == gen[h].value) {
+                                                                prizes_out += "<tr><td>" + year + "</td><td>" + category + "</td><td>" + overallMotivation + "</td><td>" + "<a id='laur_out' href='javascript:box(" + current_id + ");'>" + laureates_out[j].fullName + "</a>" + "</br>Motivation: " + motivation + "</td></tr>";
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else if (catSelect === "All") {
+                                        var category = prizesArray[i].category;
+
+                                        if (prizesArray[i].overallMotivation == null) {
+                                            var overallMotivation = " ";
+                                        } else {
+                                            var overallMotivation = prizesArray[i].overallMotivation;
+                                        };
+                                        for (var j = 0; j < laureates_out.length; j++) {
+                                            var id = laureates[j].id;
+                                            current_id = id;
+                                            morePrizesInfo = '';
+                                            for (var m = 0; m < winnersArray.length; m++) {
+                                                var morePrizes = winnersArray[m].prizes;
+
+                                                var gender = winnersArray[m].gender;
+                                                for (var n = 0; n < morePrizes.length; n++) {
+                                                    var motivation = morePrizes[n].motivation;
+
+                                                    if (winnersArray[m].id == current_id) {
+                                                        if (gen[h].value == "male female") {
+                                                            prizes_out += "<tr><td>" + year + "</td><td>" + category + "</td><td>" + overallMotivation + "</td><td>" + "<a id='laur_out' href='javascript:box(" + current_id + ");'>" + laureates_out[j].fullName + "</a>" + "</br>Motivation: " + motivation + "</td></tr>";
+                                                        } else {
+                                                            if (winnersArray[m].gender == gen[h].value) {
+
+                                                                prizes_out += "<tr><td>" + year + "</td><td>" + category + "</td><td>" + overallMotivation + "</td><td>" + "<a id='laur_out' href='javascript:box(" + current_id + ");'>" + laureates_out[j].fullName + "</a>" + "</br>Motivation: " + motivation + "</td></tr>";
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    prizes_out += "</table>";
+                    document.getElementById("prizes_table").innerHTML = prizes_out;
+                }
+            </script>
+        </div>
+    </div>
+
+</body></html>

@@ -1,0 +1,152 @@
+html {
+    width: 100%;
+   
+    min-height: 100%;
+   
+}
+
+body {
+
+    color: #545454;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 110%;
+    position: absolute;
+    width: 98%;
+    min-height: 100%;
+
+}
+
+
+
+h1 {
+    font-size: 300%;
+    color: #2E1114;
+}
+
+header {
+    text-align: center;
+    margin-left: 12%;
+    margin-right: 12%;
+    padding: 2%;
+    background-color: white;
+    float: block;
+}
+
+.homepage {
+    padding: 2%;
+    background-color: #83677B;
+    background-size: cover;
+
+}
+
+nav {
+    display: block;
+
+}
+
+#main {
+    padding: 2%;
+}
+
+h2 {
+    text-align: center;
+    font-size: 200%;
+    color: #ADADAD;
+}
+
+table {
+    border-radius: 20px;
+    width: 90%;
+    margin: 0 auto;
+    border: 1px;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*found on: https://css-tricks.com/almanac/properties/j/justify-content/*/
+    flex-wrap: wrap;
+    padding: 33px 30px;
+    max-height: 585px;
+    overflow: auto;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+   
+
+
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f6ff
+}
+
+th {
+    padding: 1%;
+}
+
+td {
+    text-align: center;
+    border: solid 1px transparent;
+    border-style: solid none;
+    padding: 10px 10px 10px 10px;
+    align-items: center;
+}
+
+td:last-child {
+    border-right-style: solid;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+td:first-child {
+    border-left-style: solid;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+tr {
+    border-bottom: 1px solid #f2f2f2;
+    overflow: hidden;
+    border-bottom: 10px solid #fff;
+    border-radius: 10px;
+
+}
+
+
+.modal_box {
+    width:100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    position: absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.modal_content{
+    width:500px;
+    height:300px;
+    background-color: white;
+    border-radius: 4px;
+    text-align: left;
+    padding: 2%;
+    position:relative;
+    overflow:auto;
+    
+}
+
+/*modal box info found on:
+https://www.youtube.com/watch?v=gLWIYk0Sd38*/
+
+.close{
+    position:absolute;
+    top:0;
+    right:14px;
+    font-size:42px;
+    transform: rotate(45deg);
+    cursor: pointer;
+}
