@@ -1,5 +1,6 @@
 # JavaScript-JSONProject
 Nobel Prize winners interactive database
+* Requires local access of JSON data
 
 ## Key skills developed
 <ul>
